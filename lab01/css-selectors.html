@@ -1,0 +1,102 @@
+<!--
+
+DIRECTIONS:
+
+Replace ALL inline styles with external styles.
+You must use the three selector types EFFICIENTLY (class, id, HTML Element)
+You must work with ONLY ONE teammate (For teams with four teammates)
+
+-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> The Seasons </title>
+    <meta charset="utf-8" />
+    <style>
+        body {
+            background-color: black;
+        }
+        h1 {
+            color: yellow;
+            text-align: center;
+            font-family: 'Pacifico', cursive;
+            // vw = View Width
+            font-size: max(2vw, 7vw);
+            margin: 0 auto;
+            .seasonIm
+
+        }
+
+        .row{
+            display:flex;
+            justify-content:center;
+        }
+
+    </style>
+</head>
+
+<body id = "bodyId" style="background-color:black">
+
+    <header>
+        <h1
+            style="color: yellow; text-align: center; font-family: 'Pacifico', cursive; font-size:max(2vw, 7vw); margin:0 auto;">
+            The Seasons</h1>
+    </header>
+
+    <main>
+
+        <!--first row-->
+        <div class = "row" style="display:flex; justify-content:center">
+
+            <figure style="text-align: center; width:40%">
+                <img id="spring" style="border-top-left-radius:25px; border:1px solid yellow;width:100%;height:auto"
+                    src="https://csumb.space/cst/336/practice/img/spring.png" alt="spring" />
+                <figcaption style="color:white; font-size:max(2vw, 4vw)">
+                    Spring
+                </figcaption>
+            </figure>
+            <figure style="text-align: center; width:40%">
+                <img style="border-top-right-radius:25px; border:1px solid yellow; ; width:100%; height:auto"
+                    src="https://csumb.space/cst/336/practice/img/summer.png" alt="summer" />
+                <figcaption style="color:white; font-size:max(2vw, 4vw)">
+                    Summer
+                </figcaption>
+            </figure>
+
+        </div>
+
+        <!--second row-->
+        <div class = "row">
+
+            <figure style="text-align: center; width:40%">
+                <img style="border-bottom-left-radius:25px; border:1px solid yellow; width:100%; height:auto"
+                    src="https://csumb.space/cst/336/practice/img/fall.png" alt="fall" />
+                <figcaption style="color:white; font-size:max(2vw, 4vw)">
+                    Autumn
+                </figcaption>
+            </figure>
+
+            <figure style="text-align: center; width:40%">
+                <img style="border-bottom-right-radius:25px; border:1px solid yellow; width:100%; height:auto"
+                    src="https://csumb.space/cst/336/practice/img/winter.png" alt="winter" />
+                <figcaption style="color:white; font-size:max(2vw, 4vw)">
+                    Winter
+                </figcaption>
+            </figure>
+
+        </div>
+
+    </main>
+
+    <hr style="width:75%; margin-top:20px">
+
+    <footer style="font-size:3vw; color:silver;text-align:center; top-padding:10px">
+        California State University Monterey Bay
+        <br><img style="width:15%" src="https://csumb.space/cst/336/img/csumb_logo.png">
+    </footer>
+
+</body>
+
+</html>
