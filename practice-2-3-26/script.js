@@ -1,4 +1,3 @@
-
 /*
 DONT USE VAR, unsafe
 var a = 1;
@@ -27,53 +26,49 @@ let year = today.getFullYear();
 console.log(year);
 console.dir(year);
 
-if (today.getMonth() === 1) {
-    alert("January");
+function getTime(today) {
+    return today.toLocaleTimeString();
 }
-if (today.getMonth() === 2) {
-    alert("February!");
-}
-    else {
-        alert("Not February!");
+
+function getMonth(today) {
+    if (today.getMonth() === 1) {
+        return ("January");
+    } else if (today.getMonth() === 2) {
+        return ("February!");
+    } else if (today.getMonth() === 3) {
+        return ("March");
+    } else if (today.getMonth() === 4) {
+        return ("April");
+    } else if (today.getMonth() === 5) {
+        return ("May");
+    } else if (today.getMonth() === 6) {
+        return ("June");
+    } else if (today.getMonth() === 7) {
+        return ("July");
+    } else if (today.getMonth() === 8) {
+        return ("August");
+    } else if (today.getMonth() === 9) {
+        return ("September");
+    } else if (today.getMonth() === 10) {
+        return ("October");
+    } else if (today.getMonth() === 11) {
+        return ("November");
+    } else if (today.getMonth() === 12) {
+        return ("December");
+    } else {
+        return ("Invalid month");
     }
+}
 
+document.querySelector("#month").textContent = getMonth(today);
+document.querySelector("#date").textContent = today.getDate();
 
-if (today.getMonth() === 3) {
-    alert("March");
+function displayDate() {
+    let h1Element = document.querySelector("#h1Text");
+    h1Element.textContent = today.toDateString();
 }
-if (today.getMonth() === 4) {
-    alert("April");
-}
-if (today.getMonth() === 5) {
-    alert("May");
-}
-if (today.getMonth() === 6) {
-    alert("June");
-}
-if (today.getMonth() === 7) {
-    alert("July");
-}
-if (today.getMonth() === 8) {
-    alert("August");
-}
-if (today.getMonth() === 9) {
-    alert("September");
-}
-if (today.getMonth() === 10) {
-    alert("October");
-}
-if (today.getMonth() === 11) {
-    alert("November");
-}
-if (today.getMonth() === 12) {
-    alert("December");
-}
-console.log(today.getMonth());
-console.log(today.getDate());
-console.log(today.getDay());
-console.log(today.getHours());
-console.log(today.getMinutes());
-console.log(today.getSeconds());
-console.log(today.getTime());
 
-alert(today);
+function displayTime() {
+    let h2Element = document.querySelector("#h2Text");
+    h2Element.textContent = getTime(today);
+}
