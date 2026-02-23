@@ -1,4 +1,4 @@
-// image paths (put these files in /img)
+// image paths
 const CHECK_IMG = "img/check.png";
 const X_IMG = "img/x.png";
 
