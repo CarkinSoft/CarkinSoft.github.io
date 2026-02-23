@@ -1,14 +1,13 @@
-// // image paths
-// const CHECK_IMG = "img/check.png";
-// const X_IMG = "img/x.png";
+// Check and X image sources
+const CHECK_IMG = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Eo_circle_green_checkmark.svg/960px-Eo_circle_green_checkmark.svg.png";
+const X_IMG = "https://www.freeiconspng.com/thumbs/x-png/x-png-15.png";
 
-// global variables
 let score = 0;
 let attempts = parseInt(localStorage.getItem("total_attempts") || "0", 10);
 
 document.addEventListener("DOMContentLoaded", () => {
     displayQ4Choices();
-    updateAttemptsText(); // show current attempts (before they submit again)
+    updateAttemptsText();
 
     document.querySelector("#submitBtn").addEventListener("click", gradeQuiz);
 });
@@ -34,7 +33,6 @@ function displayQ4Choices() {
 }
 
 function shuffleArray(arr) {
-    // Fisher-Yates shuffle
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         const temp = arr[i];
@@ -113,7 +111,7 @@ function gradeQuiz() {
         wrongAnswer(2, "Incorrect (Answer: Alaska)");
     }
 
-    // Q3 (checkboxes) - must check ONLY the 4 correct presidents
+    // Q3 (checkboxes)
     const correctIds = ["Washington", "Jefferson", "Lincoln", "Roosevelt"];
     const wrongIds = ["Franklin", "Jackson"];
 
@@ -152,12 +150,12 @@ function gradeQuiz() {
         document.querySelector("#congratsMsg").textContent = "Nice job! You scored above 80!";
     }
 
-    // attempts (localStorage)
-    attempts += 1;
-    localStorage.setItem("total_attempts", String(attempts));
-    updateAttemptsText();
-}
-
-function updateAttemptsText() {
-    document.querySelector("#totalAttempts").textContent = `Total Attempts: ${attempts}`;
+//     // attempts
+//     attempts += 1;
+//     localStorage.setItem("total_attempts", String(attempts));
+//     updateAttemptsText();
+// }
+//
+// function updateAttemptsText() {
+//     document.querySelector("#totalAttempts").textContent = `Total Attempts: ${attempts}`;
 }
