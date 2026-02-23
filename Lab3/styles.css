@@ -17,20 +17,6 @@ body {
     position: relative;
 }
 
-.corner-gif {
-    display: none;
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 64px;
-    height: 64px;
-    border-radius: 10px;
-    border: 1px solid rgba(232, 238, 252, 0.18);
-    object-fit: cover;
-    background: rgba(0, 0, 0, 0.2);
-    pointer-events: none;
-}
-
 .wrap.win {
     border-color: rgba(96, 232, 160, 0.55);
     box-shadow: 0 0 0 4px rgba(96, 232, 160, 0.12);
