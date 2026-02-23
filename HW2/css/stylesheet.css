@@ -46,13 +46,13 @@ body {
 
 .mark-slot {
     display: inline-block;
-    width: 10px;
+    width: 20px;
     vertical-align: middle;
 }
 
 .mark-img {
-    width: 10px;
-    height: 10px;
+    width: 20px;
+    height: 20px;
     margin-right: 6px;
 }
 
