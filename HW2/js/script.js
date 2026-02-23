@@ -3,11 +3,11 @@ const CHECK_IMG = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Eo_
 const X_IMG = "https://www.freeiconspng.com/thumbs/x-png/x-png-15.png";
 
 let score = 0;
-let attempts = parseInt(localStorage.getItem("total_attempts") || "0", 10);
+//let attempts = parseInt(localStorage.getItem("total_attempts") || "0", 10);
 
 document.addEventListener("DOMContentLoaded", () => {
     displayQ4Choices();
-    updateAttemptsText();
+    //updateAttemptsText();
 
     document.querySelector("#submitBtn").addEventListener("click", gradeQuiz);
 });
