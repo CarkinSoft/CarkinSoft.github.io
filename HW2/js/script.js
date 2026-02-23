@@ -1,5 +1,3 @@
-// Simple Geography Quiz (student-style)
-
 // image paths (put these files in /img)
 const CHECK_IMG = "img/check.png";
 const X_IMG = "img/x.png";
