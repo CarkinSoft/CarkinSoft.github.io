@@ -1,3 +1,5 @@
+
+
 // Check and X image sources
 const CHECK_IMG = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Eo_circle_green_checkmark.svg/960px-Eo_circle_green_checkmark.svg.png";
 const X_IMG = "https://www.freeiconspng.com/thumbs/x-png/x-png-15.png";
