@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#submitBtn").addEventListener("click", gradeQuiz);
 });
 
-function displayQ4Choices() {
+async function displayQ4Choices() {
     const q4Choices = ["Maine", "Rhode Island", "Maryland", "Delaware"];
     shuffleArray(q4Choices);
 
@@ -32,7 +32,7 @@ function displayQ4Choices() {
     }
 }
 
-function shuffleArray(arr) {
+async function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         const temp = arr[i];
@@ -41,7 +41,7 @@ function shuffleArray(arr) {
     }
 }
 
-function isFormValid() {
+async function isFormValid() {
     const v = document.querySelector("#validationFdbk");
     v.className = "my-3";
     v.innerHTML = "";
@@ -75,20 +75,20 @@ function isFormValid() {
     return true;
 }
 
-function rightAnswer(index, msg) {
+async function rightAnswer(index, msg) {
     document.querySelector(`#q${index}Feedback`).className = "feedback correct";
     document.querySelector(`#q${index}Feedback`).textContent = msg || "Correct";
     document.querySelector(`#markImg${index}`).innerHTML = `<img class="mark-img" src="${CHECK_IMG}" alt="correct">`;
     score += 20;
 }
 
-function wrongAnswer(index, msg) {
+async function wrongAnswer(index, msg) {
     document.querySelector(`#q${index}Feedback`).className = "feedback wrong";
     document.querySelector(`#q${index}Feedback`).textContent = msg || "Incorrect";
     document.querySelector(`#markImg${index}`).innerHTML = `<img class="mark-img" src="${X_IMG}" alt="incorrect">`;
 }
 
-function gradeQuiz() {
+async function gradeQuiz() {
     // reset score each submit
     score = 0;
     document.querySelector("#congratsMsg").textContent = "";
