@@ -1,6 +1,6 @@
-// image paths
-const CHECK_IMG = "img/check.png";
-const X_IMG = "img/x.png";
+// // image paths
+// const CHECK_IMG = "img/check.png";
+// const X_IMG = "img/x.png";
 
 // global variables
 let score = 0;
