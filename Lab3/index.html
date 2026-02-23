@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Slot Machine</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="wrap" id="wrap">
+    <h1>🤪Carson's Crazy Slots 🎰</h1>
+
+        <div class="panel">
+          <div class="meta">
+            <div>💰Balance: <span id="balance">100</span></div>
+            <div class="small"><strong>Payout:</strong> BAR = 3X, 🍒= 10X, 7️⃣ = 100X</div>
+          </div>
+
+          <div class="slots" aria-label="Slot reels">
+            <div class="slot" id="reel1">—</div>
+            <div class="slot" id="reel2">—</div>
+            <div class="slot" id="reel3">—</div>
+          </div>
+
+          <div id="resultCard" class="result-card" role="status" aria-live="polite">
+            <div class="result-top">
+              <div>
+                <div id="resultTitle" class="result-title">Welcome!</div>
+                <div id="resultSubtitle" class="result-subtitle"></div>
+              </div>
+
+              <img id="outcomeGif" class="result-gif" alt="Outcome gif" />
+            </div>
+          </div>
+
+          <div class="message" id="message"></div>
+
+          <div class="row">
+            <div>
+              <label for="bet">Bet amount</label>
+              <input id="bet" type="number" inputmode="decimal" min="1" step="1" value="5" />
+            </div>
+            <div>
+              <label>&nbsp;</label>
+              <button id="spinBtn" type="button">Spin</button>
+            </div>
+          </div>
+
+          <div class="hint">
+            Hint:
+            <br>
+            Enter your bets! Match 3 to win it big!
+            <br>
+            (Refresh the page to start over)
+            <br>
+            <br>
+            Bonus hint:
+            <br>
+            <img src = "https://preview.redd.it/request-is-this-actually-true-v0-1isi1o1ub9hf1.jpeg?width=640&crop=smart&auto=webp&s=2586f14e27eb4b9c11c3be8c83fbbc30a9536097" alt = "gamble on" width = 40%>
+          </div>
+        </div>
+      </div>
+      <script src="js/script.js"></script>
+    </body>
+</html>
