@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Coupon Snake BGM</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap');
+
+  :root {
+    --bg:      #0e1a10;
+    --surface: #152018;
+    --border:  #2d5c34;
+    --green:   #4ade80;
+    --amber:   #fbbf24;
+    --text:    #c8e6c9;
+    --muted:   #4a7a52;
+    --glow:    rgba(74,222,128,0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'VT323', monospace;
+    color: var(--text);
+    overflow: hidden;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.07) 2px,
+      rgba(0,0,0,0.07) 4px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Grid bg */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(45,92,52,0.15) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(45,92,52,0.15) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+  }
+
+  .card {
+    position: relative;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    box-shadow:
+      0 0 0 1px rgba(74,222,128,0.1),
+      0 0 40px rgba(74,222,128,0.08),
+      inset 0 0 60px rgba(0,0,0,0.3);
+    padding: 36px 44px 32px;
+    width: 420px;
+    text-align: center;
+  }
+
+  /* Corner decorations */
+  .card::before, .card::after {
+    content: '▪';
+    position: absolute;
+    color: var(--green);
+    font-size: 8px;
+  }
+  .card::before { top: 6px; left: 8px; }
+  .card::after  { top: 6px; right: 8px; }
+
+  .corner-br, .corner-bl {
+    position: absolute;
+    color: var(--green);
+    font-size: 8px;
+  }
+  .corner-br { bottom: 6px; right: 8px; }
+  .corner-bl { bottom: 6px; left: 8px; }
+
+  .title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.65em;
+    color: var(--green);
+    letter-spacing: 0.05em;
+    line-height: 1.7;
+    text-shadow: 0 0 12px rgba(74,222,128,0.5);
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    font-size: 1.1em;
+    color: var(--amber);
+    letter-spacing: 0.08em;
+    margin-bottom: 28px;
+  }
+
+  /* Waveform visualizer */
+  .viz-wrap {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 10px 12px 6px;
+    margin-bottom: 24px;
+    height: 72px;
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    overflow: hidden;
+  }
+
+  .vbar {
+    flex: 1;
+    background: var(--green);
+    border-radius: 1px 1px 0 0;
+    height: 3px;
+    transition: height 0.11s ease;
+    box-shadow: 0 0 4px rgba(74,222,128,0.4);
+    opacity: 0.85;
+  }
+  .vbar:nth-child(even) { background: #34d399; }
+
+  /* Snake icon animating */
+  .snake-display {
+    font-size: 2.8em;
+    margin-bottom: 16px;
+    letter-spacing: -2px;
+    line-height: 1;
+    min-height: 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .seg {
+    display: inline-block;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  button {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.55em;
+    padding: 10px 18px;
+    border: 2px solid;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.1s;
+    background: transparent;
+  }
+
+  #playBtn {
+    color: var(--green);
+    border-color: var(--green);
+    box-shadow: 0 0 8px rgba(74,222,128,0.2);
+  }
+  #playBtn:hover, #playBtn.active {
+    background: var(--green);
+    color: var(--bg);
+    box-shadow: 0 0 16px rgba(74,222,128,0.5);
+  }
+
+  /* Progress bar */
+  .progress-wrap {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    height: 8px;
+    border-radius: 1px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--amber));
+    width: 0%;
+    transition: width 0.5s linear;
+    box-shadow: 0 0 6px rgba(74,222,128,0.4);
+  }
+
+  /* Stats row */
+  .stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1em;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .stats span { color: var(--text); }
+
+  /* Loop badge */
+  .badge {
+    display: inline-block;
+    color: var(--amber);
+    font-size: 0.85em;
+    letter-spacing: 0.08em;
+  }
+
+  .fade-in {
+    animation: fadeIn 0.6s ease forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="card fade-in">
+  <div class="corner-br">▪</div>
+  <div class="corner-bl">▪</div>
+
+  <div class="snake-display" id="snakeDisplay">
+    <span class="seg">🟩</span><span class="seg">🟩</span><span class="seg">🟩</span><span class="seg">🐍</span><span class="seg">🎫</span>
+  </div>
+
+  <div class="title">COUPON SNAKE</div>
+  <div class="subtitle">CHILL BGM · LO-FI LOOP</div>
+
+  <div class="viz-wrap" id="vizWrap">
+    <!-- bars injected by JS -->
+  </div>
+
+  <div class="controls">
+    <button id="playBtn" onclick="togglePlay()">▶ PLAY</button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <div class="stats">
+    <div id="timeDisplay">--:-- / 01:14</div>
+    <div class="badge" id="loopBadge">LOOP OFF</div>
+  </div>
+</div>
+
+<script>
+// ─── Constants ────────────────────────────────────────────────────────────────
+const BPM    = 72;
+const BEAT   = 60 / BPM;          // seconds per beat
+const BAR    = BEAT * 4;           // seconds per bar
+const BARS   = 24;                 // total bars
+const TOTAL  = BAR * BARS;         // ~80 seconds
+
+// Frequencies
+const N = {
+  C2:65.41, Db2:69.30, D2:73.42, Eb2:77.78, E2:82.41, F2:87.31,
+  Gb2:92.50, G2:98.00, Ab2:103.83, A2:110.00, Bb2:116.54, B2:123.47,
+  C3:130.81, D3:146.83, E3:164.81, F3:174.61, G3:196.00, A3:220.00, B3:246.94,
+  C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.00, A4:440.00, B4:493.88,
+  C5:523.25, D5:587.33, E5:659.25, F5:698.46, G5:783.99, A5:880.00,
+};
+
+// ─── Chord Progression ────────────────────────────────────────────────────────
+// 4 chords × 2 bars × 3 cycles = 24 bars
+const PROG = [
+  { label:'Cmaj7', bass:N.C2, pad:[N.C3,N.E3,N.G3,N.B3] },
+  { label:'Am7',   bass:N.A2, pad:[N.A3,N.C4,N.E4,N.G4] },
+  { label:'Fmaj7', bass:N.F2, pad:[N.F3,N.A3,N.C4,N.E4] },
+  { label:'G7',    bass:N.G2, pad:[N.G3,N.B3,N.D4,N.F4] },
+];
+
+// ─── Melodies (16 8th-note slots per 2-bar block) ─────────────────────────────
+const MELS = [
+  // Cmaj7
+  [N.E4,0,N.G4,N.A4, N.G4,N.E4,0,N.D4, N.E4,0,N.G4,N.E4, N.D4,N.C4,0,N.E4],
+  // Am7
+  [N.A4,0,N.C5,N.A4, N.G4,0,N.E4,N.G4, N.A4,0,N.G4,N.E4, N.A4,N.G4,0,N.E4],
+  // Fmaj7
+  [N.F4,N.A4,0,N.C5, N.A4,0,N.G4,N.F4, N.A4,N.G4,N.F4,0, N.E4,N.D4,N.C4,0],
+  // G7
+  [N.G4,0,N.B4,N.D5, N.B4,N.G4,0,N.A4, N.G4,N.F4,N.E4,0, N.D4,N.C4,N.D4,0],
+];
+
+// ─── Globals ─────────────────────────────────────────────────────────────────
+let ctx = null, master = null;
+let playing = false, startWhen = 0, loopCount = 0;
+let vizTimer = null, uiTimer = null, loopSched = null;
+const VIZ_BARS = 28;
+
+// ─── Build visualizer bars ───────────────────────────────────────────────────
+(function buildViz() {
+  const wrap = document.getElementById('vizWrap');
+  for (let i = 0; i < VIZ_BARS; i++) {
+    const b = document.createElement('div');
+    b.className = 'vbar';
+    b.id = 'vb' + i;
+    wrap.appendChild(b);
+  }
+})();
+
+// ─── Audio helpers ───────────────────────────────────────────────────────────
+function schedOsc(freq, start, dur, vol, type, dest, det = 0) {
+  const osc = ctx.createOscillator();
+  const env = ctx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  if (det) osc.detune.value = det;
+  const atk = Math.min(0.025, dur * 0.12);
+  const rel = Math.min(0.08,  dur * 0.18);
+  env.gain.setValueAtTime(0.0001, start);
+  env.gain.linearRampToValueAtTime(vol, start + atk);
+  env.gain.setValueAtTime(vol, start + dur - rel);
+  env.gain.linearRampToValueAtTime(0.0001, start + dur);
+  osc.connect(env); env.connect(dest);
+  osc.start(start); osc.stop(start + dur + 0.01);
+}
+
+function hihat(start, vol, dest) {
+  const len = Math.ceil(ctx.sampleRate * 0.055);
+  const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+  const d   = buf.getChannelData(0);
+  for (let i = 0; i < len; i++)
+    d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.5);
+  const src = ctx.createBufferSource();
+  const hpf = ctx.createBiquadFilter();
+  const env = ctx.createGain();
+  hpf.type = 'highpass'; hpf.frequency.value = 8000;
+  env.gain.setValueAtTime(vol, start);
+  env.gain.linearRampToValueAtTime(0.0001, start + 0.05);
+  src.buffer = buf;
+  src.connect(hpf); hpf.connect(env); env.connect(dest);
+  src.start(start);
+}
+
+function snare(start, vol, dest) {
+  const len = Math.ceil(ctx.sampleRate * 0.09);
+  const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+  const d   = buf.getChannelData(0);
+  for (let i = 0; i < len; i++)
+    d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 1.6);
+  const src = ctx.createBufferSource();
+  const bpf = ctx.createBiquadFilter();
+  const env = ctx.createGain();
+  bpf.type = 'bandpass'; bpf.frequency.value = 2200; bpf.Q.value = 0.6;
+  env.gain.setValueAtTime(vol, start);
+  env.gain.linearRampToValueAtTime(0.0001, start + 0.09);
+  src.buffer = buf;
+  src.connect(bpf); bpf.connect(env); env.connect(dest);
+  src.start(start);
+}
+
+// Build a simple reverb via parallel comb filters
+function buildReverb() {
+  const input  = ctx.createGain(); input.gain.value = 1;
+  const output = ctx.createGain(); output.gain.value = 0.28;
+  const times  = [0.029, 0.051, 0.077, 0.113];
+  times.forEach(t => {
+    const d  = ctx.createDelay(1.0);
+    const fb = ctx.createGain();
+    const lp = ctx.createBiquadFilter();
+    d.delayTime.value = t;
+    fb.gain.value = 0.38;
+    lp.frequency.value = 1600;
+    input.connect(d);
+    d.connect(lp);
+    lp.connect(fb);
+    fb.connect(d);
+    lp.connect(output);
+  });
+  output.connect(master);
+  return input;
+}
+
+// ─── Schedule one full 24-bar loop ───────────────────────────────────────────
+function scheduleLoop(t0) {
+  if (!playing) return;
+
+  const rev = buildReverb();
+
+  for (let cycle = 0; cycle < 3; cycle++) {
+    for (let ci = 0; ci < 4; ci++) {
+      const bs   = t0 + (cycle * 4 + ci) * 2 * BAR;
+      const chord = PROG[ci];
+      const mel   = MELS[ci];
+
+      // ── PADS (2-bar hold, warm sine stack) ──
+      const padDur = 2 * BAR - 0.1;
+      chord.pad.forEach((freq, i) => {
+        // dry sine
+        schedOsc(freq, bs, padDur, 0.085, 'sine',     master, i * 5 - 7);
+        schedOsc(freq, bs, padDur, 0.038, 'triangle', master, -i * 3 + 5);
+        // reverb send
+        schedOsc(freq, bs, padDur, 0.04,  'sine',     rev,    i * 4);
+      });
+
+      // ── BASS (pluck + fifth ghost) ──
+      for (let b = 0; b < 2; b++) {
+        const bStart = bs + b * BAR;
+        schedOsc(chord.bass,      bStart,       BAR * 0.65, 0.32, 'sine', master);
+        schedOsc(chord.bass * 1.5, bStart + 2*BEAT, BEAT * 0.4, 0.1, 'sine', master);
+      }
+
+      // ── MELODY (8th notes over 2 bars) ──
+      for (let i = 0; i < 16; i++) {
+        if (!mel[i]) continue;
+        const ns = bs + i * (BEAT / 2);
+        schedOsc(mel[i], ns, BEAT * 0.32, 0.11, 'triangle', master);
+        schedOsc(mel[i], ns, BEAT * 0.32, 0.045, 'triangle', rev, 6);
+      }
+
+      // ── PERCUSSION (hi-hats every 8th, snare on 2&4) ──
+      for (let b = 0; b < 2; b++) {
+        for (let eighth = 0; eighth < 8; eighth++) {
+          const hs = bs + b * BAR + eighth * (BEAT / 2);
+          const isDown = eighth % 4 === 0;
+          hihat(hs, isDown ? 0.038 : 0.020, master);
+          // snare on beat 2 and 4
+          if (eighth === 2 || eighth === 6) snare(hs, 0.055, master);
+        }
+      }
+
+      // ── AMBIENT CHIME on beat 1 of every 4th bar ──
+      if (ci === 0 || ci === 2) {
+        const chimeFreq = [N.C5, N.E5, N.G5][Math.floor(ci / 2)];
+        schedOsc(chimeFreq, bs, BEAT * 1.2, 0.06, 'sine', rev, 0);
+      }
+    }
+  }
+
+  // Schedule next loop slightly before end to avoid gap
+  loopSched = setTimeout(() => {
+    if (playing) {
+      loopCount++;
+      document.getElementById('loopBadge').textContent = `LOOP ${loopCount}`;
+      scheduleLoop(t0 + TOTAL);
+    }
+  }, (TOTAL - 0.8) * 1000);
+}
+
+// ─── UI helpers ─────────────────────────────────────────────────────────────
+function startViz() {
+  const bars = document.querySelectorAll('.vbar');
+  let phase = 0;
+  vizTimer = setInterval(() => {
+    if (!playing) return;
+    phase += 0.18;
+    bars.forEach((b, i) => {
+      const wave = Math.sin(phase + i * 0.45) * 0.5 + 0.5;
+      const rand = Math.random() * 0.4;
+      const h = Math.max(3, Math.round((wave * 0.65 + rand * 0.35) * 52));
+      b.style.height = h + 'px';
+    });
+  }, 100);
+}
+
+function stopViz() {
+  clearInterval(vizTimer);
+  document.querySelectorAll('.vbar').forEach(b => b.style.height = '3px');
+}
+
+function startUI() {
+  uiTimer = setInterval(() => {
+    if (!playing || !ctx) return;
+    const elapsed  = (ctx.currentTime - startWhen) % TOTAL;
+    const totalSec = TOTAL;
+    const pct = (elapsed / totalSec) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    const em  = Math.floor(elapsed / 60).toString().padStart(2,'0');
+    const es  = Math.floor(elapsed % 60).toString().padStart(2,'0');
+    const tm  = Math.floor(totalSec / 60).toString().padStart(2,'0');
+    const ts  = Math.floor(totalSec % 60).toString().padStart(2,'0');
+    document.getElementById('timeDisplay').textContent = `${em}:${es} / ${tm}:${ts}`;
+  }, 400);
+}
+
+function stopUI() {
+  clearInterval(uiTimer);
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('timeDisplay').textContent  = '--:-- / 01:20';
+  document.getElementById('loopBadge').textContent    = 'LOOP OFF';
+}
+
+// ─── Snake animation ─────────────────────────────────────────────────────────
+let snakeAnim = null;
+const SEGS = ['🟩','🟩','🟩','🟩','🐍','🎫'];
+function startSnake() {
+  let offset = 0;
+  const el = document.getElementById('snakeDisplay');
+  snakeAnim = setInterval(() => {
+    offset = (offset + 1) % SEGS.length;
+    const rotated = [...SEGS.slice(offset), ...SEGS.slice(0, offset)];
+    el.innerHTML = rotated.map(s => `<span class="seg">${s}</span>`).join('');
+  }, 280);
+}
+function stopSnake() {
+  clearInterval(snakeAnim);
+  document.getElementById('snakeDisplay').innerHTML =
+    '<span class="seg">🟩</span><span class="seg">🟩</span><span class="seg">🟩</span><span class="seg">🐍</span><span class="seg">🎫</span>';
+}
+
+// ─── Toggle ──────────────────────────────────────────────────────────────────
+function togglePlay() {
+  if (!playing) {
+    ctx    = new (window.AudioContext || window.webkitAudioContext)();
+    master = ctx.createGain();
+    // 1-second fade-in
+    master.gain.setValueAtTime(0, ctx.currentTime);
+    master.gain.linearRampToValueAtTime(0.72, ctx.currentTime + 1.0);
+    master.connect(ctx.destination);
+
+    playing   = true;
+    loopCount = 1;
+    startWhen = ctx.currentTime;
+    scheduleLoop(startWhen);
+
+    const btn = document.getElementById('playBtn');
+    btn.textContent = '⏹ STOP';
+    btn.classList.add('active');
+    document.getElementById('loopBadge').textContent = 'LOOP 1';
+
+    startViz();
+    startUI();
+    startSnake();
+  } else {
+    playing = false;
+    clearTimeout(loopSched);
+
+    master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
+    master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.35);
+    setTimeout(() => { if (ctx) { ctx.close(); ctx = null; } }, 500);
+
+    const btn = document.getElementById('playBtn');
+    btn.textContent = '▶ PLAY';
+    btn.classList.remove('active');
+
+    stopViz();
+    stopUI();
+    stopSnake();
+  }
+}
+</script>
+</body>
+</html>
