@@ -1,0 +1,401 @@
+##################################################
+Simplified API CALL Sample code:
+async function getAPIData() {
+let url = "https://api.example.com/data";
+       	const response = await fetch(url);
+       	const data = await response.json();
+       	console.log(data);
+}
+
+getAPIData();
+
+###################################################
+
+MIDTERM NOTES:
+For the midterm exam, you'll implement a Famous Quotes web app.
+A random quote an corresponding author should be displayed after loading the page.
+Users are able to translate the quote by selecting one of the available languages.
+Users can also choose to display up to five quotes.
+
+##################################################
+
+Midterm Practice Instructions:
+1. Retrieve and display a random quote and its corresponding author using the
+following Web API. A random quote should be displayed everytime the page reloads.
+
+https://csumb.space/api/famousQuotes/getRandomQuote.php
+
+----------------------------
+TASK 1 SAMPLE CODE (Random Quote on Load)
+----------------------------
+
+//global variables (so other buttons can use the quote info)
+let data = "";
+let quoteId = "";
+
+getRandomQuote();
+
+async function getRandomQuote() {
+
+    let url = "https://csumb.space/api/famousQuotes/getRandomQuote.php";
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Error accessing API endpoint")
+        }
+
+        data = await response.json();
+        console.log(data);
+
+        quoteId = data.quoteId;
+
+        document.querySelector("#quote").textContent = data.quoteText;
+        document.querySelector("#author").textContent = `${data.firstName} ${data.lastName}`;
+
+    } catch (err) {
+        if (err instanceof TypeError) {
+            alert("Error accessing API endpoint (network failure)");
+        } else {
+            alert(err.message);
+        }
+    }
+}
+
+##################################################
+
+2. When clicking on the "Display Author Info", display the author's bio and
+picture using the data retrieved from the Web API. Use a two-column layout.
+
+----------------------------
+TASK 2 SAMPLE CODE (Display Author Info Button)
+----------------------------
+
+document.querySelector("#authorInfoBtn").addEventListener("click", displayAuthorInfo);
+
+function displayAuthorInfo() {
+
+    //data must already be loaded from getRandomQuote()
+    document.querySelector("#bio").textContent = data.bio;
+    document.querySelector("#authorPhoto").src = data.picture;
+
+}
+
+##################################################
+
+3. Display the languages radio buttons. They must be in random order every time
+the page loads
+
+----------------------------
+TASK 3 SAMPLE CODE (Random Order Language Radio Buttons)
+----------------------------
+
+//HTML idea:
+// <div id="languageContainer"></div>
+
+displayLanguageChoices();
+
+function displayLanguageChoices() {
+
+    let languages = [
+        { code: "EN", label: "English" },
+        { code: "ES", label: "Esperanto" },
+        { code: "FR", label: "French" },
+        { code: "SP", label: "Spanish" }
+    ];
+
+    shuffleArray(languages);
+
+    document.querySelector("#languageContainer").innerHTML = "";
+
+    for (let i = 0; i < languages.length; i++) {
+
+        let label = document.createElement("label");
+        label.style.display = "block";
+
+        let radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "language";
+        radio.value = languages[i].code;
+
+        label.append(radio);
+        label.append(" " + languages[i].label);
+
+        document.querySelector("#languageContainer").append(label);
+
+    }
+
+    //optional: check first one by default
+    let firstRadio = document.querySelector("input[name='language']");
+    if (firstRadio) {
+        firstRadio.checked = true;
+    }
+
+}
+
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        let randIndex = Math.floor(Math.random() * (i + 1));
+        let temp = arr[i];
+        arr[i] = arr[randIndex];
+        arr[randIndex] = temp;
+    }
+}
+
+##################################################
+
+4. When clicking on the "Translate" button, display the corresponding flag image
+(download images here) and use the following Web API to get the translation. You
+must pass the quoteId and the two-letter abbreviation of the language (EN-English,
+ES-Esperanto, FR-French, SP-Spanish)
+
+https://csumb.space/api/famousQuotes/translateQuote.php?lang=ES&quoteId=2
+
+----------------------------
+TASK 4 SAMPLE CODE (Translate + Flag)
+----------------------------
+
+//HTML idea:
+// <button id="translateBtn">Translate</button>
+// <img id="flagImg">
+// <div id="translatedQuote"></div>
+
+document.querySelector("#translateBtn").addEventListener("click", translateQuote);
+
+async function translateQuote() {
+
+    let selected = document.querySelector("input[name='language']:checked");
+
+    if (!selected) {
+        alert("Select a language");
+        return;
+    }
+
+    let lang = selected.value;
+
+    displayFlag(lang);
+
+    let url = `https://csumb.space/api/famousQuotes/translateQuote.php?lang=${lang}&quoteId=${quoteId}`;
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Error accessing API endpoint")
+        }
+
+        const translatedData = await response.json();
+        console.log(translatedData);
+
+        //property name can vary, so check common ones
+        document.querySelector("#translatedQuote").textContent =
+            translatedData.translation || translatedData.translatedText || translatedData.quoteText;
+
+    } catch (err) {
+        if (err instanceof TypeError) {
+            alert("Error accessing API endpoint (network failure)");
+        } else {
+            alert(err.message);
+        }
+    }
+
+}
+
+function displayFlag(lang) {
+
+    //update these image paths to match your project
+    if (lang === "EN") {
+        document.querySelector("#flagImg").src = "img/english_flag.png";
+    } else if (lang === "ES") {
+        document.querySelector("#flagImg").src = "img/esperanto_flag.png";
+    } else if (lang === "FR") {
+        document.querySelector("#flagImg").src = "img/french_flag.png";
+    } else if (lang === "SP") {
+        document.querySelector("#flagImg").src = "img/spanish_flag.png";
+    }
+
+}
+
+##################################################
+
+5. When clicking on the "Get Quotes" button, validate the text box (must have a
+value between 1 and 5). Use Web API below to get the specified number of quotes
+and display them with their author.
+
+https://csumb.space/api/famousQuotes/getQuotes.php?n=3
+
+----------------------------
+TASK 5 SAMPLE CODE (Validate + Get Quotes)
+----------------------------
+
+//HTML idea:
+// <input type="number" id="numQuotes">
+// <button id="getQuotesBtn">Get Quotes</button>
+// <div id="errorMsg"></div>
+// <div id="quoteContainer"></div>
+
+document.querySelector("#getQuotesBtn").addEventListener("click", displayQuotes);
+
+function validateNumQuotes() {
+
+    let value = document.querySelector("#numQuotes").value;
+
+    if (value === "") {
+        return null;
+    }
+
+    let n = Number(value);
+
+    if (Number.isNaN(n)) {
+        return null;
+    }
+
+    if (n < 1 || n > 5) {
+        return null;
+    }
+
+    return n;
+
+}
+
+async function displayQuotes() {
+
+    document.querySelector("#errorMsg").textContent = "";
+    document.querySelector("#errorMsg").style.color = "red";
+
+    let n = validateNumQuotes();
+
+    if (n === null) {
+        document.querySelector("#errorMsg").textContent = "Enter a number between 1 and 5";
+        return;
+    }
+
+    let url = `https://csumb.space/api/famousQuotes/getQuotes.php?n=${n}`;
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Error accessing API endpoint")
+        }
+
+        const quotes = await response.json();
+        console.log(quotes);
+
+        document.querySelector("#quoteContainer").innerHTML = "";
+
+        for (let i = 0; i < quotes.length; i++) {
+
+            let quoteDiv = document.createElement("div");
+
+            let quoteP = document.createElement("p");
+            quoteP.textContent = `"${quotes[i].quoteText}"`;
+
+            let authorP = document.createElement("p");
+            authorP.textContent = `- ${quotes[i].firstName} ${quotes[i].lastName}`;
+
+            quoteDiv.append(quoteP);
+            quoteDiv.append(authorP);
+            quoteDiv.append(document.createElement("hr"));
+
+            document.querySelector("#quoteContainer").append(quoteDiv);
+
+        }
+
+    } catch (err) {
+        if (err instanceof TypeError) {
+            alert("Error accessing API endpoint (network failure)");
+        } else {
+            alert(err.message);
+        }
+    }
+
+}
+
+##################################################
+
+6. Display a random background image every time the page is refreshed. Use the
+following Web API (consider using your own Web API key to avoid exceeding the rate limit).
+
+https://pixabay.com/api/?key=5589438-47a0bca778bf23fc2e8c5bf3e&per_page=50&orientation=horizontal&q=flowers
+
+----------------------------
+TASK 6 SAMPLE CODE (Random Background on Load)
+----------------------------
+
+setRandomBackground();
+
+async function setRandomBackground() {
+
+    let searchTerm = "flowers";
+
+    //use your own key if needed (placeholder shown here)
+    let apiKey = "<YOUR_PIXABAY_KEY>";
+
+    let url = `https://pixabay.com/api/?key=${apiKey}&per_page=50&orientation=horizontal&q=${searchTerm}`;
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Error accessing API endpoint")
+        }
+
+        const bgData = await response.json();
+        console.log(bgData);
+
+        let rand = Math.floor(Math.random() * bgData.hits.length);
+        let bgImage = bgData.hits[rand].webformatURL;
+
+        document.querySelector("body").style.backgroundImage = `url("${bgImage}")`;
+        document.querySelector("body").style.backgroundSize = "cover";
+
+    } catch (err) {
+        console.log(err);
+    }
+
+}
+
+##################################################
+
+Midterm Rubric:
+You only need 100 points. There are over 100 points in the rubric, so you are
+not expected to do everythig. You can choose the items to complete.
+
+Once you're done or the time is up, click on the "Copy Rubric" button below and
+paste it at the bottom of your program and update the text color of the items
+you've completed. Green if complete, red otherwise. If you're unsure about an item,
+use black text. You'll get three extra points for updating and copying the rubric.
+
+Task Description	Points
+1	A random quote and corresponding author is displayed when
+loading the page                                                 20
+
+2	The author's bio and picture is displayed when clicking
+on the "Display Author Info" button                              15
+
+3	The author's bio and picture are displayed in a
+two-column layout using a flex box                               10
+
+4	The language choices (radio buttons) are displayed in a
+random order every time the page is reloaded                     20
+5	The corresponding language flag is displayed when clicking
+on the "Translate" button                                        20
+
+6	The random quote displayed is translated into the language
+selected when clicking on the "Translate" button                 20
+
+7	An error message in red is displayed if the value entered
+in the "Number of Quotes" text box is not between 1 and 5 or
+if it's left blank                                               20
+
+8	The specified number of quotes and corresponding authors
+(1 to 5) are displayed when clicking on the "Get Quotes" button  20
+
+9	A random background image is displayed every time the
+page is reloaded using the Web API provided	                     20
+
+10	This rubric is properly included AND UPDATED                 3
+
+#####################################################################################################################################

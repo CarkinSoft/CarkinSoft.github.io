@@ -13,11 +13,16 @@
         <title>Image API</title>
         <link rel="stylesheet" href="css/stylesheet.css">
     </head>
+    <style>
+        #imageDisplay img {
+            width: 200px;
+        }
+    </style>
     <body>
 
         <div>
             <select>
-            <option value="">-- choose one --</option>
+            <option value="none">-- choose one --</option>
             <option value="Ocean">Ocean</option>
             <option value="Clouds">Clouds</option>
             <option value="Flowers">Flowers</option>
@@ -25,6 +30,9 @@
             <option value="Space">Space</option>
             </select>
         </div>
+
+    <span id="imageDisplay">
+    </span>
 
     </body>
     <script src="js/script.js"></script>
