@@ -1,10 +1,12 @@
 
-let zipElement = document.querySelector("#zipCode").value;
+let zipElement = document.querySelector("#zipCode");
 zipElement.addEventListener("change", displayCity);
 // document.querySelector("#password").addEventListener("click", displaySuggestions);
 
 
 async function displayCity(){
+
+    let zipCode = zipElement.value;
 
     let url = "https://csumb.space/api/cityInfoAPI.php?zip=" + zipCode;
     console.log(url);
@@ -45,5 +47,6 @@ async function displayStates() {
             alert(err.message);
         }
     } //catch
-displayStates()
 }
+
+displayStates();
