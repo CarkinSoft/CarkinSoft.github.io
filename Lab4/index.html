@@ -2,40 +2,85 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Sign Up Form</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
-
-<style>
-    #zipCode {}
-    #latitude {}
-    #longitude {}
-</style>
 
 <body>
 
-<h1> Sign Up Form </h1>
+<main>
+    <h1>Sign Up Form</h1>
 
-<fieldset>
-    <legend>Sign Up</legend>
-    First Name: <input type="text"><br>
-    Last Name: <input type="text"><br>
-    Email: <input type="text"><br>
-    Phone Number:<input type="text"><br><br>
-    Zip Code: <input id = "zipCode" type="text"><br>
-    City: <span id = "city"></span>
-    <br>
-    Latitude: <span id = "latitude"></span>
-    <br>
-    Longitude: <span id = "longitude"></span>
-    <br><br>
-    State:  <select id="state"></select><br>
-    Select a County: <select></select><br>
+    <fieldset>
+        <legend>Sign Up</legend>
 
-    Desired Username: <input type="text"><br>
-    Password: <input type="password"><br>
-    Type Password Again: <input type="password"><br>
-    <input type="submit" value="Sign up!">
-</fieldset>
+        <label>First Name:</label>
+        <input type="text">
+        <br>
+
+        <label>Last Name:</label>
+        <input type="text">
+        <br>
+
+        <label>Email:</label>
+        <input type="text">
+        <br>
+
+        <label>Phone Number:</label>
+        <input type="text">
+        <br><br>
+
+        <label>Zip Code:</label>
+        <input id="zipCode" type="text">
+        <span id="zipMessage"></span>
+        <br>
+
+        <label>City:</label>
+        <span id="city"></span>
+        <br>
+
+        <label>Latitude:</label>
+        <span id="latitude"></span>
+        <br>
+
+        <label>Longitude:</label>
+        <span id="longitude"></span>
+        <br><br>
+
+        <label>State:</label>
+        <select id="state">
+            <option value="">Select a State</option>
+        </select>
+        <br>
+
+        <label>Select a County:</label>
+        <select id="county">
+            <option value="">Select a County</option>
+        </select>
+        <br><br>
+
+        <label>Desired Username:</label>
+        <input id="username" type="text">
+        <span id="usernameMessage"></span>
+        <br>
+
+        <label>Password:</label>
+        <input id="password" type="password">
+        <span id="passwordMessage"></span>
+        <br>
+
+        <label>Suggested Password:</label>
+        <span id="suggestedPassword"></span>
+        <br>
+
+        <label>Type Password Again:</label>
+        <input id="passwordAgain" type="password">
+        <span id="passwordAgainMessage"></span>
+        <br><br>
+
+        <input id="submitButton" type="submit" value="Sign up!">
+    </fieldset>
+</main>
 
 <script src="js/script.js"></script>
 </body>
