@@ -1,6 +1,6 @@
 body {
-    background-color: black;
-    color: white;
+    background-color: white;
+    color: black;
     font-family: Arial, sans-serif;
     margin: 0;
 }
@@ -13,17 +13,17 @@ main {
 
 h1 {
     text-align: center;
-    color: white;
+    color: black;
 }
 
 fieldset {
-    border: 2px solid white;
+    border: 2px black;
     padding: 20px;
-    background-color: black;
+    background-color: white;
 }
 
 legend {
-    color: white;
+    color: black;
     font-weight: bold;
     padding: 5px;
 }
